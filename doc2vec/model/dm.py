@@ -13,12 +13,12 @@ class DM(model.Doc2VecModel):
 
         embedded_sequence = Embedding(input_dim=self._vocab_size,
                                       output_dim=self._embedding_size,
-                                      input_length=self._window_size,
-                                      name=model.DOC_EMBEDDINGS_LAYER_NAME)(sequence_input)
+                                      input_length=self._window_size)(sequence_input)
         embedded_doc = Embedding(input_dim=self._num_docs,
                                  output_dim=self._embedding_size,
-                                 input_length=1)(doc_input)
-      
+                                 input_length=1,
+                                 name=model.DOC_EMBEDDINGS_LAYER_NAME)(doc_input)
+
         embedded = Concatenate(axis=1)([embedded_doc, embedded_sequence])
         split = Lambda(lambdas.split(self._window_size))(embedded)
         averaged = Average()(split)

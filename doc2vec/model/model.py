@@ -25,7 +25,7 @@ class Doc2VecModel(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, window_size, vocab_size, num_docs,
-                 embedding_size=DEFAULT_EMBEDDING_SIZE):
+    embedding_size=DEFAULT_EMBEDDING_SIZE):
         self._window_size = window_size
         self._vocab_size = vocab_size
         self._num_docs = num_docs
@@ -85,6 +85,16 @@ class Doc2VecModel(object):
     def load(self, path):
         logger.info('Loading model from %s', path)
         self._model = load_model(path)
+
+    def freeze_layer(self, layer_id):
+        self._model.layers[layer_id].trainable = False
+
+    def get_weights(self, layer_id):
+        return self._model.layers[layer_id].get_weights()
+
+
+    def replace_weights(self, layer_id, weights):
+        self._model.layers[layer_id].set_weights(weights)
 
 
 class _SaveDocEmbeddings(Callback):
